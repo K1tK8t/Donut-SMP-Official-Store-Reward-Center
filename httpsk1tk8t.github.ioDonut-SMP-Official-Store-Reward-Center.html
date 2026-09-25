@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donut SMP | Official Store Reward Center</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0f172a;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            text-align: center;
+            position: relative;
+        }
+
+        /* --- WATERMARK IN THE CORNER --- */
+        .watermark {
+            position: fixed;
+            bottom: 15px;
+            right: 20px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.25); /* Subtle transparency */
+            font-weight: bold;
+            letter-spacing: 1px;
+            z-index: 100; /* Stays on top of everything */
+            user-select: none;
+            pointer-events: none;
+            font-family: monospace;
+        }
+
+        /* --- SCREEN 1: FAKE STORE --- */
+        #store-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            max-width: 450px;
+            width: 90%;
+            padding: 30px;
+            background: rgba(30, 41, 59, 0.7);
+            border: 2px solid #f59e0b;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .store-logo {
+            font-size: 4rem;
+            margin: 0;
+        }
+
+        h2 {
+            color: #f59e0b;
+            margin-top: 10px;
+            font-size: 1.8rem;
+            text-transform: uppercase;
+        }
+
+        .promo-text {
+            color: #e2e8f0;
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+        }
+
+        .highlight {
+            color: #4ade80;
+            font-weight: bold;
+        }
+
+        .input-box {
+            width: 90%;
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            border: 2px solid #475569;
+            border-radius: 50px;
+            background-color: #0f172a;
+            color: white;
+            outline: none;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+
+        .input-box:focus {
+            border-color: #f59e0b;
+        }
+
+        .redeem-btn {
+            margin-top: 20px;
+            width: 100%;
+            padding: 14px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background-color: #f59e0b;
+            color: #0f172a;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .redeem-btn:hover {
+            background-color: #d97706;
+            transform: scale(1.02);
+        }
+
+        /* --- SCREEN 2: BAIT SCREEN --- */
+        #bait-screen {
+            display: none; 
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            color: #ef4444;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: blink 1s infinite alternate;
+        }
+
+        .bait-text {
+            font-size: 1.8rem;
+            color: #94a3b8;
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+
+        .image-container {
+            max-width: 90%;
+            max-height: 450px;
+        }
+
+        img {
+            width: 100%;
+            max-height: 450px;
+            object-fit: contain;
+            border: 5px solid #ef4444;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
+        }
+
+        /* --- FALLING EMOJIS --- */
+        .emoji {
+            position: absolute;
+            top: -50px;
+            font-size: 2rem;
+            user-select: none;
+            pointer-events: none;
+            animation: fall linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) rotate(720deg);
+                opacity: 0.3;
+            }
+        }
+
+        @keyframes blink {
+            from { opacity: 1; }
+            to { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- THE WATERMARK -->
+    <div class="watermark">john was here</div>
+
+    <!-- SCREEN 1: THE FAKE REWARD CLAIM AREA -->
+    <div id="store-screen">
+        <div class="store-logo">🍩</div>
+        <h2>Donut SMP Reward Center</h2>
+        <p class="promo-text">Enter your Minecraft username below to instantly redeem <span class="highlight">$1,000,000,000 in-game money</span>!</p>
+        
+        <input type="text" id="username" class="input-box" placeholder="Minecraft Username" required>
+        <button class="redeem-btn" onclick="triggerBait()">Claim $1 Billion</button>
+    </div>
+
+    <!-- SCREEN 2: THE BAIT SCREEN -->
+    <div id="bait-screen">
+        <h1>🎣 YOU GOT BAITED! </h1>
+        <p class="bait-text" id="custom-bait-msg">Hook, line, and sinker.</p>
+
+        <div class="image-container">
+            <img src="https://giphy.com" alt="It's a Trap">
+        </div>
+    </div>
+
+    <script>
+        function triggerBait() {
+            var usernameInput = document.getElementById('username').value.trim();
+            
+            if (usernameInput === "") {
+                usernameInput = "Sucker";
+            }
+
+            document.getElementById('store-screen').style.display = 'none';
+            document.getElementById('bait-screen').style.display = 'flex';
+
+            document.getElementById('custom-bait-msg').innerText = "Nice try, " + usernameInput + "! 😂 No billion dollars for you.";
+
+            var audio = new Audio('https://soundjay.com');
+            audio.play();
+
+            setInterval(createEmoji, 130);
+        }
+
+        function createEmoji() {
+            const emojis = ['😂', '🤣', '💀'];
+            const emojiEl = document.createElement('div');
+            emojiEl.classList.add('emoji');
+            
+            emojiEl.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+            
+            emojiEl.style.left = Math.random() * 100 + 'vw';
+            emojiEl.style.animationDuration = Math.random() * 2 + 1.5 + 's'; 
+            emojiEl.style.fontSize = Math.random() * 25 + 20 + 'px'; 
+            
+            document.body.appendChild(emojiEl);
+            
+            setTimeout(() => {
+                emojiEl.remove();
+            }, 4000);
+        }
+    </script>
+
+</body>
+</html>
